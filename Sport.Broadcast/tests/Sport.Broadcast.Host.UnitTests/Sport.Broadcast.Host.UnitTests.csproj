@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+      <PackageReference Include="NSubstitute" Version="5.1.0" />
+      <PackageReference Include="xunit" Version="2.6.5" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Sport.Broadcast.Api.Contracts\Sport.Broadcast.Api.Contracts.csproj" />
+      <ProjectReference Include="..\..\src\Sport.Broadcast.AppServices.Contract\Sport.Broadcast.AppServices.Contract.csproj" />
+      <ProjectReference Include="..\..\src\Sport.Broadcast.Host\Sport.Broadcast.Host.csproj" />
+    </ItemGroup>
+
+</Project>

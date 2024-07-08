@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+WORKDIR /src
+
+COPY src/Sport.Broadcast.Migrations/ Sport.Broadcast.Migrations/
+
+WORKDIR /src/Sport.Broadcast.Migrations
+RUN dotnet restore
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /src
+
+COPY --from=build-env /src/Sport.Broadcast.Migrations/out .
+
+ENTRYPOINT ["dotnet", "Sport.Broadcast.Migrations.dll"]

@@ -1,0 +1,64 @@
+version: "3.9"
+volumes:
+  volume1:
+  
+services:
+    sport-broadcast-service-db:
+      image: postgres:latest
+      container_name: sport-broadcast-service-db
+      ports:
+        - "6432:5432"
+      environment:
+        POSTGRES_DB: "sportbroadcast"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "231527"
+        PGUSER: "postgres"
+        TZ: "Europe/Moscow"
+      healthcheck:
+        test: /usr/bin/pg_isready
+        interval: 5s
+        timeout: 10s
+        retries: 120
+      networks:
+        - broadcast
+     
+    sport-broadcast-service-migration:
+      build:
+        context: ./Sport.Broadcast
+        dockerfile: Dockerfile-migration
+      container_name: sport-broadcast-migration
+      image: sport-broadcast-service-migration:latest
+      depends_on:
+        sport-broadcast-service-db:
+          condition: service_healthy
+      volumes:
+        - ./sport-broadcast/appsettings.json:/app/appsettings.json
+      networks:
+        - broadcast
+    
+    sport-broadcast-service:
+        build:
+            context: ./Sport.Broadcast
+            dockerfile: Dockerfile
+        container_name: sport-broadcast
+        image: sport-broadcast-service:latest
+        ports:
+          - "2023:80"
+        depends_on:
+          sport-broadcast-service-db:
+            condition: service_healthy
+          sport-broadcast-service-migration:
+            condition: service_completed_successfully
+        volumes:
+          - ./sport-broadcast/appsettings.json:/app/appsettings.json
+          - ./sport-broadcast/logs:/app/logs
+        environment:
+          - TZ=Europe/Moscow
+        networks:
+          - broadcast
+        restart: unless-stopped
+                 
+networks:
+    broadcast:
+        name: broadcast
+        driver: bridge
